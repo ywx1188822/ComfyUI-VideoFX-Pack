@@ -7,11 +7,27 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.color import hex_to_rgb
 
+
+def _tensor_to_pil(tensor):
+    """[B,H,W,C] 或 [H,W,C] tensor → PIL RGB 图像"""
+    if tensor.dim() == 4:
+        tensor = tensor[0]
+    arr = np.ascontiguousarray(tensor.cpu().numpy())
+    arr = (arr * 255).clip(0, 255).astype(np.uint8)
+    return Image.fromarray(arr, mode='RGB')
+
+
+def _pil_to_tensor(pil_img):
+    """PIL 图像 → [1,H,W,C] float32 tensor"""
+    arr = np.ascontiguousarray(np.array(pil_img.convert('RGB')))
+    return torch.from_numpy(arr.astype(np.float32) / 255.0).unsqueeze(0)
+
+
 class GridSplitMergeNode:
     """📦 Grid Split/Merge - 宫格拆分/拼装节点"""
-    
+
     CATEGORY = "Image/Utility"
-    
+
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -28,14 +44,13 @@ class GridSplitMergeNode:
                 "images_batch": ("IMAGE",),
             }
         }
-    
+
     RETURN_TYPES = ("IMAGE",)
     OUTPUT_IS_LIST = (True,)
     FUNCTION = "process_grid"
-    
-    def process_grid(self, mode, grid_type, custom_rows, custom_cols, 
+
+    def process_grid(self, mode, grid_type, custom_rows, custom_cols,
                      gap_size, gap_color, image=None, images_batch=None):
-        # 解析宫格行列数
         if grid_type == "2x2 (4 格)":
             rows, cols = 2, 2
         elif grid_type == "3x3 (9 格)":
@@ -44,79 +59,58 @@ class GridSplitMergeNode:
             rows, cols = 5, 5
         else:
             rows, cols = custom_rows, custom_cols
-        
+
         if mode == "split":
             if image is None:
                 raise ValueError("split mode requires 'image' input")
-            return self.split_grid(image, rows, cols, gap_size, gap_color)
+            return self.split_grid(image, rows, cols, gap_size)
         else:
             if images_batch is None:
                 raise ValueError("merge mode requires 'images_batch' input")
             return self.merge_to_grid(images_batch, rows, cols, gap_size, gap_color)
-    
-    def split_grid(self, image, rows, cols, gap_size, gap_color):
-        """拆分宫格：1 张宫格图 → N 张独立图片"""
-        img_tensor = image[0]
-        pil_img = Image.fromarray((img_tensor.cpu().numpy() * 255).astype(np.uint8))
-        
+
+    def split_grid(self, image, rows, cols, gap_size):
+        """拆分宫格：1 张宫格图 → N 张独立图片，每张为 [1,H,W,C]"""
+        pil_img = _tensor_to_pil(image[0])
         img_w, img_h = pil_img.size
-        
-        # 等比例计算每个格子的尺寸
+
         cell_w = (img_w - gap_size * (cols - 1)) // cols
         cell_h = (img_h - gap_size * (rows - 1)) // rows
-        
+
         output_images = []
-        
-        # 按行优先顺序拆分 (从左到右、从上到下)
         for r in range(rows):
             for c in range(cols):
                 left = c * (cell_w + gap_size)
-                top = r * (cell_h + gap_size)
-                right = left + cell_w
-                bottom = top + cell_h
-                
-                cell = pil_img.crop((left, top, right, bottom))
-                cell_np = np.array(cell).astype(np.float32) / 255.0
-                output_images.append(torch.from_numpy(cell_np))
-        
+                top  = r * (cell_h + gap_size)
+                cell = pil_img.crop((left, top, left + cell_w, top + cell_h))
+                output_images.append(_pil_to_tensor(cell))
+
         return (output_images,)
-    
+
     def merge_to_grid(self, images_batch, rows, cols, gap_size, gap_color):
         """拼装宫格：N 张独立图片 → 1 张宫格图"""
-        if images_batch is None or len(images_batch) == 0:
-            raise ValueError("images_batch cannot be empty")
-        
         bg_color = hex_to_rgb(gap_color)
-        
-        # 获取第一张图的尺寸
-        first_img_tensor = images_batch[0]
-        h, w = first_img_tensor.shape[0], first_img_tensor.shape[1]
-        
-        # 计算输出宫格的总尺寸
-        output_w = w * cols + gap_size * (cols - 1)
-        output_h = h * rows + gap_size * (rows - 1)
-        
-        # 创建背景画布
+
+        # 将 batch tensor 转为 PIL 列表，正确处理 [B,H,W,C] 或 [H,W,C]
+        pil_images = [_tensor_to_pil(images_batch[i]) for i in range(len(images_batch))]
+
+        # 以第一张图的 PIL 尺寸为准（width, height），避免 tensor 维度混淆
+        cell_w, cell_h = pil_images[0].size
+        output_w = cell_w * cols + gap_size * (cols - 1)
+        output_h = cell_h * rows + gap_size * (rows - 1)
+
         bg = Image.new('RGB', (output_w, output_h), bg_color)
-        
-        # 按顺序粘贴每张图
-        expected_count = rows * cols
-        actual_count = min(len(images_batch), expected_count)
-        
+
+        actual_count = min(len(pil_images), rows * cols)
         for idx in range(actual_count):
             r = idx // cols
             c = idx % cols
-            
-            img_tensor = images_batch[idx]
-            pil_img = Image.fromarray((img_tensor.cpu().numpy() * 255).astype(np.uint8))
-            
-            x = c * (w + gap_size)
-            y = r * (h + gap_size)
-            
-            bg.paste(pil_img, (x, y))
-        
-        bg_np = np.array(bg).astype(np.float32) / 255.0
-        return ([torch.from_numpy(bg_np)],)
+            x = c * (cell_w + gap_size)
+            y = r * (cell_h + gap_size)
+            bg.paste(pil_images[idx], (x, y))
+
+        return ([_pil_to_tensor(bg)],)
+
 
 NODE_CLASS_MAPPINGS = {
     "GridSplitMergeNode": GridSplitMergeNode
