@@ -1,4 +1,24 @@
 import numpy as np
+from PIL import Image
+
+
+def adjust_hue(img_np, hue_shift_deg):
+    """Shift hue by hue_shift_deg (0-360). img_np is float32 RGB [0,1]."""
+    img_uint8 = (np.clip(img_np, 0, 1) * 255).astype(np.uint8)
+    pil_img = Image.fromarray(img_uint8, mode="RGB").convert("HSV")
+    hsv = np.array(pil_img).astype(np.int32)
+    hsv[..., 0] = (hsv[..., 0] + int(hue_shift_deg / 360.0 * 255)) % 256
+    return np.array(Image.fromarray(hsv.astype(np.uint8), mode="HSV").convert("RGB")).astype(np.float32) / 255.0
+
+
+def adjust_lightness(img_np, lightness):
+    """Adjust lightness by -100~100 (additive on V channel). img_np is float32 RGB [0,1]."""
+    img_uint8 = (np.clip(img_np, 0, 1) * 255).astype(np.uint8)
+    pil_img = Image.fromarray(img_uint8, mode="RGB").convert("HSV")
+    hsv = np.array(pil_img).astype(np.int32)
+    hsv[..., 2] = np.clip(hsv[..., 2] + int(lightness / 100.0 * 255), 0, 255)
+    return np.array(Image.fromarray(hsv.astype(np.uint8), mode="HSV").convert("RGB")).astype(np.float32) / 255.0
+
 
 def adjust_brightness(img_np, brightness):
     """调节亮度 (-100 到 100)"""

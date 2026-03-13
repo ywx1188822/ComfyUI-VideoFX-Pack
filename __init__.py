@@ -1,13 +1,24 @@
 """
-ComfyUI VideoFX Pack - P0 Release
+ComfyUI VideoFX Pack - P1 Release
 ==================================
 
-5 个核心节点：
+P0 节点（5 个）：
 1. 🔄 360° Rotate Showcase - 旋转展示
 2. 📐 Perspective Flip Card - 透视翻转
 3. 📦 Grid Split/Merge - 宫格拆分/拼装
 4. 🎚️ Brightness & Contrast - 亮度对比度
 5. 🌊 Wave Distortion Animation - 波浪扭曲
+
+P1 节点（9 个）：
+6. 🔍 Magnifying Glass Scan - 放大镜扫描
+7. 🎞️ Film Strip Scroll - 胶片条滚动
+8. 💫 Starburst Zoom - 星爆缩放
+9. 🎭 Mask Reveal Transition - 遮罩揭幕
+10. 🎨 Saturation & Hue - 饱和度色调调节
+11. 🌈 Color Gradient Transition - 色彩渐变过渡
+12. 📺 CRT TV Power-On - 老电视开机
+13. 🎬 Cinema Opening - 电影院开幕
+14. 📦 Grid Animation - 宫格动画
 """
 
 import os
@@ -21,6 +32,16 @@ NODE_FILES = [
     "nodes/grid_split_merge.py",
     "nodes/brightness_contrast.py",
     "nodes/wave_distortion.py",
+    # P1
+    "nodes/magnifying_glass.py",
+    "nodes/film_strip.py",
+    "nodes/starburst_zoom.py",
+    "nodes/mask_reveal.py",
+    "nodes/saturation_hue.py",
+    "nodes/color_gradient.py",
+    "nodes/crt_tv.py",
+    "nodes/cinema_opening.py",
+    "nodes/grid_animation.py",
 ]
 
 # 节点类映射
