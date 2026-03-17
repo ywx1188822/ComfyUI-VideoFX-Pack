@@ -27,12 +27,13 @@ import importlib.util
 
 # 节点文件列表（相对于本文件的路径）
 NODE_FILES = [
+    # P0 (5 个)
     "nodes/rotate_showcase.py",
     "nodes/perspective_flip.py",
     "nodes/grid_split_merge.py",
     "nodes/brightness_contrast.py",
     "nodes/wave_distortion.py",
-    # P1
+    # P1 (9 个)
     "nodes/magnifying_glass.py",
     "nodes/film_strip.py",
     "nodes/starburst_zoom.py",
@@ -42,6 +43,26 @@ NODE_FILES = [
     "nodes/crt_tv.py",
     "nodes/cinema_opening.py",
     "nodes/grid_animation.py",
+    # P2 (19 个)
+    "nodes/crystal_ball.py",
+    "nodes/carousel_rotation.py",
+    "nodes/vortex_spiral.py",
+    "nodes/diamond_shine.py",
+    "nodes/fireworks_burst.py",
+    "nodes/water_ripple.py",
+    "nodes/fire_burn.py",
+    "nodes/ice_freeze.py",
+    "nodes/door_transition.py",
+    "nodes/book_page_turn.py",
+    "nodes/window_wipe.py",
+    "nodes/curtain_open.py",
+    "nodes/puzzle_assemble.py",
+    "nodes/phone_unlock.py",
+    "nodes/border_frame.py",
+    "nodes/watermark_add.py",
+    "nodes/crop_resize.py",
+    "nodes/filter_preset.py",
+    "nodes/histogram_equalize.py",
 ]
 
 # 节点类映射

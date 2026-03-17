@@ -1,6 +1,6 @@
 # ComfyUI VideoFX Pack
 
-🎬 **14 个图像转视频特效节点**
+🎬 **33 个图像转视频特效节点**
 
 ---
 
@@ -46,6 +46,30 @@ git clone https://github.com/ywx1188822/ComfyUI-VideoFX-Pack
 | 🎬 | Cinema Opening | 电影院开幕 | Video/Animation | 单次 |
 | 📦 | Grid Animation | 宫格动画 | Video/Animation | 单次 |
 
+### P2 节点（19 个）
+
+| 图标 | 节点名称 | 功能 | 类别 | 循环 |
+|------|----------|------|------|------|
+| 🔮 | Crystal Ball Reveal | 水晶球揭示 | Video/Animation | 往返 |
+| 🎠 | Carousel Rotation | 旋转木马 | Video/Animation | 完美循环 |
+| 🌀 | Vortex Spiral | 漩涡螺旋 | Video/Animation | 往返 |
+| 💎 | Diamond Shine | 钻石闪耀 | Video/Animation | 往返 |
+| 🎆 | Fireworks Burst | 烟花绽放 | Video/Animation | 往返 |
+| 🌊 | Water Ripple | 水波涟漪 | Video/Animation | 往返 |
+| 🔥 | Fire Burn | 火焰燃烧 | Video/Animation | 往返 |
+| 🧊 | Ice Freeze | 冰冻效果 | Video/Animation | 往返 |
+| 🚪 | Door Transition | 门扉过渡 | Video/Animation | 单次 |
+| 📖 | Book Page Turn | 书页翻转 | Video/Animation | 单次 |
+| 🪟 | Window Wipe | 窗户擦除 | Video/Animation | 单次 |
+| 🎭 | Curtain Open | 幕布开启 | Video/Animation | 单次 |
+| 🧩 | Puzzle Assemble | 拼图组装 | Video/Animation | 单次 |
+| 📱 | Phone Unlock | 手机解锁 | Video/Animation | 单次 |
+| 🖼️ | Border Frame | 边框装饰 | Image/Utility | 无动画 |
+| 💧 | Watermark Add | 水印添加 | Image/Utility | 无动画 |
+| ✂️ | Crop Resize | 裁剪缩放 | Image/Utility | 无动画 |
+| 🎨 | Filter Preset | 滤镜预设 | Image/Adjustment | 无动画 |
+| 📊 | Histogram Equalize | 直方图均衡 | Image/Adjustment | 无动画 |
+
 ---
 
 ## 🚀 节点详情
@@ -58,10 +82,11 @@ git clone https://github.com/ywx1188822/ComfyUI-VideoFX-Pack
 
 **参数**:
 - `rotation_angle`: 旋转角度 (-720° 到 720°)
-- `rotation_direction`: 顺时针/逆时针
+- `rotation_direction`: clockwise (顺时针) / counter-clockwise (逆时针)
 - `easing`: 速度曲线 (linear/ease_in/ease_out/ease_in_out)
-- `loop_mode`: 启用循环 (首尾一致)
-- `total_seconds` / `fps`
+- `loop_mode`: enable (循环) / disable (单次)
+- `total_seconds`: 视频时长 (秒)
+- `fps`: 帧率 (默认 24)
 
 ---
 
@@ -223,6 +248,173 @@ git clone https://github.com/ywx1188822/ComfyUI-VideoFX-Pack
 
 ---
 
+### P2 节点
+
+#### 15. 🔮 Crystal Ball Reveal
+
+**功能**: 水晶球揭示效果，从中心扩散的圆形揭幕带发光
+
+**参数**:
+- `reveal_radius`: 揭示半径 (0.1-2.0)
+- `glow_strength`: 发光强度 (0-5)
+- `loop_mode`: enable / disable
+
+---
+
+#### 16. 🎠 Carousel Rotation
+
+**功能**: 3D 旋转木马效果，图像在圆形轨道上旋转
+
+**参数**:
+- `rotation_speed`: 旋转速度
+- `loop_mode`: enable / disable
+
+---
+
+#### 17. 🌀 Vortex Spiral
+
+**功能**: 漩涡螺旋扭曲效果
+
+**参数**:
+- `vortex_strength`: 漩涡强度
+- `loop_mode`: enable / disable
+
+---
+
+#### 18. 💎 Diamond Shine
+
+**功能**: 钻石切面闪耀效果
+
+**参数**:
+- `shine_intensity`: 闪耀强度
+- `loop_mode`: enable / disable
+
+---
+
+#### 19. 🎆 Fireworks Burst
+
+**功能**: 烟花绽放粒子效果
+
+**参数**:
+- `burst_count`: 爆发数量
+- `loop_mode`: enable / disable
+
+---
+
+#### 20. 🌊 Water Ripple
+
+**功能**: 水波涟漪扭曲效果
+
+**参数**:
+- `ripple_amplitude`: 涟漪振幅 (1-20)
+- `ripple_frequency`: 涟漪频率 (0.5-5.0)
+- `loop_mode`: enable / disable
+
+---
+
+#### 21. 🔥 Fire Burn
+
+**功能**: 火焰燃烧效果
+
+**参数**:
+- `burn_intensity`: 燃烧强度
+- `loop_mode`: enable / disable
+
+---
+
+#### 22. 🧊 Ice Freeze
+
+**功能**: 冰冻结晶效果
+
+**参数**:
+- `freeze_intensity`: 冰冻强度
+- `loop_mode`: enable / disable
+
+---
+
+#### 23. 🚪 Door Transition
+
+**功能**: 门扉开合过渡效果
+
+---
+
+#### 24. 📖 Book Page Turn
+
+**功能**: 书页翻转效果
+
+---
+
+#### 25. 🪟 Window Wipe
+
+**功能**: 窗户擦除过渡效果
+
+---
+
+#### 26. 🎭 Curtain Open
+
+**功能**: 幕布开启效果
+
+---
+
+#### 27. 🧩 Puzzle Assemble
+
+**功能**: 拼图组装效果
+
+---
+
+#### 28. 📱 Phone Unlock
+
+**功能**: 手机解锁效果
+
+---
+
+#### 29. 🖼️ Border Frame
+
+**功能**: 为图像添加装饰边框
+
+**参数**:
+- `border_width`: 边框宽度
+- `border_color`: 边框颜色
+
+---
+
+#### 30. 💧 Watermark Add
+
+**功能**: 为图像添加水印
+
+**参数**:
+- `text`: 水印文字
+- `position`: 水印位置
+- `opacity`: 透明度
+
+---
+
+#### 31. ✂️ Crop Resize
+
+**功能**: 图像裁剪和缩放
+
+**参数**:
+- `crop_x` / `crop_y`: 裁剪起点
+- `crop_width` / `crop_height`: 裁剪尺寸
+
+---
+
+#### 32. 🎨 Filter Preset
+
+**功能**: 滤镜预设 (vintage / cool / warm / black_white / sepia)
+
+**参数**:
+- `preset`: 预设类型
+- `intensity`: 滤镜强度 (0.1-2.0)
+
+---
+
+#### 33. 📊 Histogram Equalize
+
+**功能**: 直方图均衡化，增强图像对比度
+
+---
+
 ## 🔄 循环模式说明
 
 | 模式 | 行为 | 适用场景 |
@@ -252,7 +444,26 @@ ComfyUI-VideoFX-Pack/
 │   ├── color_gradient.py         # 🌈 P1
 │   ├── crt_tv.py                 # 📺 P1
 │   ├── cinema_opening.py         # 🎬 P1
-│   └── grid_animation.py         # 📦 P1
+│   ├── grid_animation.py         # 📦 P1
+│   ├── crystal_ball.py           # 🔮 P2
+│   ├── carousel_rotation.py      # 🎠 P2
+│   ├── vortex_spiral.py          # 🌀 P2
+│   ├── diamond_shine.py          # 💎 P2
+│   ├── fireworks_burst.py        # 🎆 P2
+│   ├── water_ripple.py           # 🌊 P2
+│   ├── fire_burn.py              # 🔥 P2
+│   ├── ice_freeze.py             # 🧊 P2
+│   ├── door_transition.py        # 🚪 P2
+│   ├── book_page_turn.py         # 📖 P2
+│   ├── window_wipe.py            # 🪟 P2
+│   ├── curtain_open.py           # 🎭 P2
+│   ├── puzzle_assemble.py        # 🧩 P2
+│   ├── phone_unlock.py           # 📱 P2
+│   ├── border_frame.py           # 🖼️ P2
+│   ├── watermark_add.py          # 💧 P2
+│   ├── crop_resize.py            # ✂️ P2
+│   ├── filter_preset.py          # 🎨 P2
+│   └── histogram_equalize.py     # 📊 P2
 ├── utils/
 │   ├── easing.py                 # 缓动函数
 │   ├── transforms.py             # 几何变换 + tensor↔PIL 工具
@@ -263,6 +474,13 @@ ComfyUI-VideoFX-Pack/
 ---
 
 ## 📝 更新日志
+
+### v0.3.0 (2026-03-17) - P2 Release
+- ✅ 新增 19 个 P2 节点（共 33 个）
+- ✅ 修复 crystal_ball.py 距离计算语法错误
+- ✅ 修复 water_ripple.py grid_sample y 坐标 bug
+- ✅ 修复 filter_preset.py in-place tensor 修改和 sepia 混合问题
+- ✅ 修复 utils/__init__.py 缺失的 smoothstep/smootherstep/bounce_out 导入
 
 ### v0.2.0 (2026-03-14) - P1 Release
 - ✅ 新增 9 个节点（共 14 个）
