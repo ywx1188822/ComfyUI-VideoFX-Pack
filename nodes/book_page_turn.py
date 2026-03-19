@@ -20,7 +20,9 @@ class BookPageTurnNode:
     
     def execute(self, image, width, height, fps, total_seconds):
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        img_tensor = image.permute(0, 3, 1, 2).to(device)
+        img = image.squeeze(0) if image.shape[0] == 1 else image[0]
+
+        img_tensor = img.permute(2, 0, 1).to(device)
         total_frames = int(total_seconds * fps)
         frames = [img_tensor * (1 - frame_idx/total_frames) for frame_idx in range(total_frames)]
         return (torch.stack(frames, dim=0).permute(0, 2, 3, 1).cpu().float(),)

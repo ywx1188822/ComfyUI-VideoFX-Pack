@@ -26,7 +26,9 @@ class FilterPresetNode:
 
     def execute(self, image, preset, intensity):
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        img_tensor = image.permute(0, 3, 1, 2).to(device)
+        img = image.squeeze(0) if image.shape[0] == 1 else image[0]
+
+        img_tensor = img.permute(2, 0, 1).to(device)
         
         if preset == "vintage":
             filtered = self.vintage_filter(img_tensor, intensity)
@@ -44,34 +46,29 @@ class FilterPresetNode:
         return (filtered.permute(0, 2, 3, 1).cpu().float(),)
     
     def vintage_filter(self, img, intensity):
-        result = img.clone()
-        result[:, 0] *= (1 + 0.1 * intensity)
-        result[:, 1] *= (1 - 0.1 * intensity)
-        return torch.clamp(result, 0, 1)
-
+        img[:, 0] *= (1 + 0.1 * intensity)
+        img[:, 1] *= (1 - 0.1 * intensity)
+        return torch.clamp(img, 0, 1)
+    
     def cool_filter(self, img, intensity):
-        result = img.clone()
-        result[:, 2] *= (1 + 0.2 * intensity)
-        return torch.clamp(result, 0, 1)
-
+        img[:, 2] *= (1 + 0.2 * intensity)
+        return torch.clamp(img, 0, 1)
+    
     def warm_filter(self, img, intensity):
-        result = img.clone()
-        result[:, 0] *= (1 + 0.2 * intensity)
-        result[:, 2] *= (1 - 0.1 * intensity)
-        return torch.clamp(result, 0, 1)
-
+        img[:, 0] *= (1 + 0.2 * intensity)
+        img[:, 2] *= (1 - 0.1 * intensity)
+        return torch.clamp(img, 0, 1)
+    
     def black_white(self, img, intensity):
         gray = 0.299 * img[:, 0] + 0.587 * img[:, 1] + 0.114 * img[:, 2]
         return torch.stack([gray, gray, gray], dim=1) * intensity + img * (1 - intensity)
-
+    
     def sepia(self, img, intensity):
-        original = img.clone()
         r, g, b = img[:, 0], img[:, 1], img[:, 2]
-        sepia_img = img.clone()
-        sepia_img[:, 0] = torch.clamp(r * 0.393 + g * 0.769 + b * 0.189, 0, 1)
-        sepia_img[:, 1] = torch.clamp(r * 0.349 + g * 0.686 + b * 0.168, 0, 1)
-        sepia_img[:, 2] = torch.clamp(r * 0.272 + g * 0.534 + b * 0.131, 0, 1)
-        return sepia_img * intensity + original * (1 - intensity)
+        img[:, 0] = torch.clamp(r * 0.393 + g * 0.769 + b * 0.189, 0, 1)
+        img[:, 1] = torch.clamp(r * 0.349 + g * 0.686 + b * 0.168, 0, 1)
+        img[:, 2] = torch.clamp(r * 0.272 + g * 0.534 + b * 0.131, 0, 1)
+        return img * intensity + img * (1 - intensity)
 
 
 NODE_CLASS_MAPPINGS = {"FilterPreset": FilterPresetNode}

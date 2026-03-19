@@ -32,7 +32,9 @@ class WaterRippleNode:
 
     def execute(self, image, width, height, fps, ripple_amplitude, ripple_frequency, total_seconds, loop_mode):
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        img_tensor = image.permute(0, 3, 1, 2).to(device)
+        img = image.squeeze(0) if image.shape[0] == 1 else image[0]
+
+        img_tensor = img.permute(2, 0, 1).to(device)
         total_frames = int(total_seconds * fps)
         frames = []
         
@@ -48,8 +50,7 @@ class WaterRippleNode:
         y, x = torch.meshgrid(torch.arange(h), torch.arange(w), indexing='ij')
         dx = amp * torch.sin(x.float() * freq * 0.1 + phase * 10)
         new_x = torch.clamp(x + dx, 0, w-1) / (w-1) * 2 - 1
-        new_y = y.float() / (h-1) * 2 - 1
-        grid = torch.stack([new_x, new_y], dim=-1).unsqueeze(0).expand(b, -1, -1, -1)
+        grid = torch.stack([new_x, torch.ones_like(new_x)], dim=-1).unsqueeze(0).expand(b, -1, -1, -1)
         return torch.nn.functional.grid_sample(img, grid, align_corners=False, padding_mode='border')
 
 

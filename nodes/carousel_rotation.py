@@ -36,7 +36,9 @@ class CarouselRotationNode:
 
     def execute(self, image, width, height, fps, rotation_angle, tilt_angle, total_seconds, loop_mode):
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        img_tensor = image.permute(0, 3, 1, 2).to(device)
+        img = image.squeeze(0) if image.shape[0] == 1 else image[0]
+
+        img_tensor = img.permute(2, 0, 1).to(device)
         total_frames = int(total_seconds * fps)
         
         frames = []

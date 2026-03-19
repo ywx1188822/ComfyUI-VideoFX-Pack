@@ -25,7 +25,9 @@ class HistogramEqualizeNode:
 
     def execute(self, image, strength):
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        img_tensor = image.permute(0, 3, 1, 2).to(device)
+        img = image.squeeze(0) if image.shape[0] == 1 else image[0]
+
+        img_tensor = img.permute(2, 0, 1).to(device)
         
         equalized = self.equalize(img_tensor)
         result = equalized * strength + img_tensor * (1 - strength)
