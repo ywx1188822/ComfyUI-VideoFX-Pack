@@ -33,7 +33,7 @@ class GridSplitMergeNode:
         return {
             "required": {
                 "mode": (["split", "merge"],),
-                "grid_type": (["2x2 (4 格)", "3x3 (9 格)", "5x5 (25 格)", "custom"],),
+                "grid_type": (["2x2 (4 格)", "3x3 (9 格)", "4x4 (16 格)", "5x5 (25 格)", "custom"],),
                 "custom_rows": ("INT", {"default": 2, "min": 1, "max": 20}),
                 "custom_cols": ("INT", {"default": 2, "min": 1, "max": 20}),
                 "gap_size": ("INT", {"default": 0, "min": 0, "max": 100}),
@@ -55,6 +55,8 @@ class GridSplitMergeNode:
             rows, cols = 2, 2
         elif grid_type == "3x3 (9 格)":
             rows, cols = 3, 3
+        elif grid_type == "4x4 (16 格)":
+            rows, cols = 4, 4
         elif grid_type == "5x5 (25 格)":
             rows, cols = 5, 5
         else:
