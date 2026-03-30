@@ -47,10 +47,24 @@ class GridSplitMergeNode:
 
     RETURN_TYPES = ("IMAGE",)
     OUTPUT_IS_LIST = (True,)
+    INPUT_IS_LIST = True
     FUNCTION = "process_grid"
 
     def process_grid(self, mode, grid_type, custom_rows, custom_cols,
                      gap_size, gap_color, image=None, images_batch=None):
+        # INPUT_IS_LIST=True means all inputs arrive as lists; unwrap scalars
+        mode = mode[0]
+        grid_type = grid_type[0]
+        custom_rows = custom_rows[0]
+        custom_cols = custom_cols[0]
+        gap_size = gap_size[0]
+        gap_color = gap_color[0]
+
+        # Consolidate list-of-tensors into single batch tensor
+        if image is not None:
+            image = torch.cat(image, dim=0) if isinstance(image, list) else image
+        if images_batch is not None:
+            images_batch = torch.cat(images_batch, dim=0) if isinstance(images_batch, list) else images_batch
         if grid_type == "2x2 (4 格)":
             rows, cols = 2, 2
         elif grid_type == "3x3 (9 格)":
